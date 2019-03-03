@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './bootstrap.css';
 import './App.css';
 import Contact from './components/Contact';
 import Header from './components/Header';
