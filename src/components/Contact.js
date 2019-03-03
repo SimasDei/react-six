@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Consumer } from '../context';
 
 class Contact extends Component {
   state = {
@@ -11,37 +12,48 @@ class Contact extends Component {
       showContactInfo: !this.state.showContactInfo
     });
   };
-  onClickDeleteHandler = () => {
-    this.props.deleteHandler();
+  onClickDeleteHandler = (id, dispatch) => {
+    dispatch({ type: 'DELETE_CONTACT', payload: id });
   };
   render() {
     const { showContactInfo } = this.state;
-    const { name, email, phone } = this.props.contact;
+    const { id, name, email, phone } = this.props.contact;
     return (
-      <div className="card card-body mb-3">
-        <h4>
-          {name}
-          {'  '}
-          <i
-            style={{ cursor: 'pointer' }}
-            onClick={this.clickHandler}
-            className="fas fa-sort-down fa-2x"
-          />
-        </h4>
-        {showContactInfo ? (
-          <ul className="list-group">
-            <li className="list-group-item">Email: {email}</li>
-            <li className="list-group-item">Phone: {phone}</li>
-            <li className="list-group-item">
-              <i
-                onClick={this.onClickDeleteHandler}
-                style={{ cursor: 'pointer', color: 'red' }}
-                className="fas fa-times fa-2x"
-              />
-            </li>
-          </ul>
-        ) : null}
-      </div>
+      <Consumer>
+        {value => {
+          const { dispatch } = value;
+          return (
+            <div className="card card-body mb-3">
+              <h4>
+                {name}
+                {'  '}
+                <i
+                  style={{ cursor: 'pointer' }}
+                  onClick={this.clickHandler}
+                  className="fas fa-sort-down fa-2x"
+                />
+              </h4>
+              {showContactInfo ? (
+                <ul className="list-group">
+                  <li className="list-group-item">Email: {email}</li>
+                  <li className="list-group-item">Phone: {phone}</li>
+                  <li className="list-group-item">
+                    <i
+                      onClick={this.onClickDeleteHandler.bind(
+                        this,
+                        id,
+                        dispatch
+                      )}
+                      style={{ cursor: 'pointer', color: 'red' }}
+                      className="fas fa-times fa-2x"
+                    />
+                  </li>
+                </ul>
+              ) : null}
+            </div>
+          );
+        }}
+      </Consumer>
     );
   }
 }
